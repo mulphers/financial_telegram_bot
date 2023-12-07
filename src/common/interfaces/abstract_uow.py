@@ -3,6 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 
 from src.database.core.connection import async_session_maker
+from src.database.repositories.expense_repository import ExpenseRepository
 from src.database.repositories.user_repository import UserRepository
 
 
@@ -18,8 +19,9 @@ class AbstractUnitOfWork(ABC):
         self.session = self.session_factory()
 
         # Register your repositories here
-        # self.<name_repo> = <class_repo>(session)
+        # self.<name_repo> = <class_repo>(self.session)
         self.user = UserRepository(self.session)
+        self.expense = ExpenseRepository(self.session)
 
         return self
 
