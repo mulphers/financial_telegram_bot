@@ -7,7 +7,7 @@ from src.routers.client import client_router
 from src.utils.decorators import with_database
 
 
-@client_router.my_chat_member(ChatMemberUpdatedFilter(member_status_changed=(KICKED | MEMBER)))
+@client_router.my_chat_member(ChatMemberUpdatedFilter(member_status_changed=KICKED))
 @with_database
 async def process_blocked_bot(
         message: Message,
@@ -23,7 +23,7 @@ async def process_blocked_bot(
 
 @client_router.my_chat_member(ChatMemberUpdatedFilter(member_status_changed=MEMBER))
 @with_database
-async def process_blocked_bot(
+async def process_unblocked_bot(
         message: Message,
         uow: AbstractUnitOfWork
 ):
