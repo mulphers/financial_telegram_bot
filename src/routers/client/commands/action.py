@@ -1,4 +1,6 @@
 from aiogram.filters.command import Command
+from aiogram.filters.state import StateFilter
+from aiogram.fsm.state import default_state
 from aiogram.types import Message
 
 from src.common.keyboards.keyboard_generator import generate_inline_keyboard
@@ -8,7 +10,10 @@ from src.utils.lexicon import (ACTION_COMMAND_MESSAGE,
                                VIEW_EXPENSES_MESSAGE)
 
 
-@client_router.message(Command(commands='action'))
+@client_router.message(
+    StateFilter(default_state),
+    Command(commands='action')
+)
 async def process_action_command(message: Message):
     await message.answer(
         text=ACTION_COMMAND_MESSAGE,

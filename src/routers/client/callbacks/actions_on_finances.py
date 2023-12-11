@@ -1,4 +1,6 @@
 from aiogram import F
+from aiogram.filters.state import StateFilter
+from aiogram.fsm.state import default_state
 from aiogram.types import CallbackQuery
 
 from src.common.keyboards.keyboard_generator import generate_inline_keyboard
@@ -7,7 +9,10 @@ from src.utils.lexicon import (ADD_EXPENSE_MESSAGE, FINANCIAL_ACTIONS_MESSAGE,
                                REMOVE_EXPENSE_MESSAGE)
 
 
-@client_router.callback_query(F.data == 'actions_on_finances')
+@client_router.callback_query(
+    StateFilter(default_state),
+    F.data == 'actions_on_finances'
+)
 async def process_actions_on_finances_press(callback: CallbackQuery):
     await callback.message.edit_text(
         text=FINANCIAL_ACTIONS_MESSAGE,
