@@ -1,5 +1,10 @@
+from typing import Sequence
+
 from aiogram.utils.keyboard import (InlineKeyboardBuilder,
                                     InlineKeyboardButton, InlineKeyboardMarkup)
+
+from src.common.callback_factory.expense import ExpenseCallbackFactory
+from src.database.models.expense import Expense
 
 
 def generate_inline_keyboard(
@@ -21,3 +26,12 @@ def generate_inline_keyboard(
     inline_kb_builder.row(*buttons, width=width)
 
     return inline_kb_builder.as_markup()
+
+
+def generate_remove_expense_keyboard(expenses: Sequence[Expense]) -> InlineKeyboardMarkup:
+    return generate_inline_keyboard(
+        width=1,
+        **{
+            ExpenseCallbackFactory(expense_id=expense.expense_id).pack(): expense.short_description
+            for expense in expenses}
+    )
