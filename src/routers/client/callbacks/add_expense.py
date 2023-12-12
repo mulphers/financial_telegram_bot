@@ -17,8 +17,6 @@ async def process_add_expense_press(
         callback: CallbackQuery,
         state: FSMContext
 ):
-    await callback.message.edit_text(
-        text=WRITE_AMOUNT_EXPENSE_MESSAGE
-    )
+    await callback.message.answer(text=WRITE_AMOUNT_EXPENSE_MESSAGE)
     await state.set_state(FSMExpenseFillForm.fill_amount_expense)
     await callback.answer()
