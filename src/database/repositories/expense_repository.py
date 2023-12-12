@@ -34,3 +34,11 @@ class ExpenseRepository(SQLAlchemyRepository[Expense]):
             self.model.user_id.__eq__(user_id),
             self.model.created_at.like(f'{date.today().year}-%-%')
         )
+
+    async def delete_expense(self, expense_id: int) -> Optional[Expense]:
+        result = await self.delete(self.model.expense_id.__eq__(expense_id))
+
+        if result:
+            return result[0]
+
+        return None
