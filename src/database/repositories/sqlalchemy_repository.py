@@ -1,14 +1,15 @@
-from typing import Any, Optional
+from typing import Any, Optional, Sequence, Type
 
-from sqlalchemy import delete, insert, select, update
+from sqlalchemy import ColumnExpressionArgument, delete, insert, select, update
 
 from src.common.interfaces.abstract_repository import AbstractRepository
+from src.common.types import Model
 
 
-class SQLAlchemyRepository(AbstractRepository):
-    model = None
+class SQLAlchemyRepository(AbstractRepository[Model]):
+    model: Type[Model]
 
-    async def create(self, data: dict[str, Any]):
+    async def create(self, data: dict[str, Any]) -> Model:
         stmt = (
             insert(self.model)
             .values(**data)
@@ -17,43 +18,43 @@ class SQLAlchemyRepository(AbstractRepository):
 
         return (await self.session.execute(stmt)).scalar_one()
 
-    async def get(self, field: Any, value: Any):
+    async def get(self, *clauses: ColumnExpressionArgument[bool]) -> Optional[Model]:
         stmt = (
             select(self.model)
-            .where(field == value)  # type: ignore
+            .where(*clauses)
         )
 
         return (await self.session.execute(stmt)).scalars().first()
 
-    async def get_many(self, field: Any, value: Any, limit: Optional[int] = None):
+    async def get_many(self, *clauses: ColumnExpressionArgument[bool], limit: Optional[int] = None) -> Sequence[Model]:
         if limit:
             stmt = (
                 select(self.model)
-                .where(field == value)  # type: ignore
+                .where(*clauses)
                 .limit(limit)
             )
         else:
             stmt = (
                 select(self.model)
-                .where(field == value)  # type: ignore
+                .where(*clauses)
             )
 
         return (await self.session.execute(stmt)).scalars().all()
 
-    async def update(self, field: Any, value: Any, data: dict[str, Any]):
+    async def update(self, *clauses: ColumnExpressionArgument[bool], data: dict[str, Any]) -> Sequence[Model]:
         stmt = (
             update(self.model)
-            .where(field == value)  # type: ignore
+            .where(*clauses)
             .values(**data)
             .returning(self.model)
         )
 
         return (await self.session.execute(stmt)).scalars().all()
 
-    async def delete(self, field: Any, value: Any):
+    async def delete(self, *clauses: ColumnExpressionArgument[bool]) -> Sequence[Model]:
         stmt = (
             delete(self.model)
-            .where(field == value)  # type: ignore
+            .where(*clauses)
             .returning(self.model)
         )
 
