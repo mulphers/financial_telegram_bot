@@ -15,5 +15,5 @@ class IsAdminFilter(BaseFilter):
             **kwargs
     ):
         return message.from_user.id in map(lambda obj: obj.user_id,
-                                           await uow.user.get_many(field=uow.user.model.is_admin, value=True)
+                                           await uow.user.get_list_admin_user()
                                            )
