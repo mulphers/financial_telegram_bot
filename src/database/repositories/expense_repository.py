@@ -18,7 +18,7 @@ class ExpenseRepository(SQLAlchemyRepository[Expense]):
 
         return await self.get_many(
             self.model.user_id.__eq__(user_id),
-            self.model.created_at.like(f'{today.year}-{today.month}-{today.day}')
+            self.model.created_at.like(f'{today.year}-{today.month}-{today.day}%')
         )
 
     async def get_expense_for_month(self, user_id: int) -> Sequence[Expense]:
