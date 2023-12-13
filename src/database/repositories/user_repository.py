@@ -26,6 +26,9 @@ class UserRepository(SQLAlchemyRepository[User]):
     async def get_list_admin_user(self) -> Sequence[User]:
         return await self.get_many(self.model.is_admin.__eq__(True))
 
+    async def get_list_active_user(self) -> Sequence[User]:
+        return await self.get_many(self.model.is_active.__eq__(True))
+
     async def update_user(self, user_id: int, data: UserUpdate) -> Sequence[User]:
         return await self.update(
             self.model.user_id.__eq__(user_id),
