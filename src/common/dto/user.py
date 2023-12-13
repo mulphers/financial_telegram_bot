@@ -1,16 +1,6 @@
-from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel
-
-
-class UserDTO(BaseModel):
-    user_id: int
-    username: str
-    is_active: bool
-    is_admin: bool
-    created_at: datetime
-    updated_at: datetime
 
 
 class UserCreate(BaseModel):
