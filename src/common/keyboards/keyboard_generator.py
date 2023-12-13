@@ -35,3 +35,16 @@ def generate_remove_expense_keyboard(expenses: Sequence[Expense]) -> InlineKeybo
             ExpenseCallbackFactory(expense_id=expense.expense_id).pack(): expense.short_description
             for expense in expenses}
     )
+
+
+def generate_ad_keyboard(text: str, url: str) -> InlineKeyboardMarkup:
+    inline_keyboard = InlineKeyboardMarkup(
+        inline_keyboard=[[
+            InlineKeyboardButton(
+                text=text,
+                url=url
+            )
+        ]]
+    )
+
+    return inline_keyboard
