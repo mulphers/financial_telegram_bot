@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 class UserCreate(BaseModel):
     user_id: int
-    username: str
+    username: Optional[str] = None
     is_active: Optional[bool] = None
     is_admin: Optional[bool] = None
 
