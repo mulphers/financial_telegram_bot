@@ -21,14 +21,14 @@ from src.utils.lexicon import (EXPENSE_SAVED_MESSAGE,
 async def process_amount_expense_message(
         message: Message,
         state: FSMContext
-):
+) -> None:
     await state.update_data(amount_expense=float(message.text))
     await message.answer(text=WRITE_SHORT_DESCRIPTION_MESSAGE)
     await state.set_state(FSMExpenseFillForm.fill_short_description)
 
 
 @client_router.message(StateFilter(FSMExpenseFillForm.fill_amount_expense))
-async def warning_amount_expense_message(message: Message):
+async def warning_amount_expense_message(message: Message) -> None:
     await message.answer(text=WARNING_AMOUNT_EXPENSE_MESSAGE)
 
 
@@ -41,7 +41,7 @@ async def process_short_description_expense_message(
         message: Message,
         state: FSMContext,
         uow: AbstractUnitOfWork
-):
+) -> None:
     await state.update_data(short_description=message.text)
 
     state_data = await state.get_data()
@@ -59,5 +59,5 @@ async def process_short_description_expense_message(
 
 
 @client_router.message(StateFilter(FSMExpenseFillForm.fill_short_description))
-async def warning_short_description_expense_message(message: Message):
+async def warning_short_description_expense_message(message: Message) -> None:
     await message.answer(text=WARNING_SHORT_DESCRIPTION_MESSAGE)

@@ -17,7 +17,7 @@ from src.utils.lexicon import PROFILE_COMMAND_MESSAGE
 async def process_profile_command(
         message: Message,
         uow: AbstractUnitOfWork
-):
+) -> None:
     user = await uow.user.get_user(
         user_id=message.from_user.id
     )

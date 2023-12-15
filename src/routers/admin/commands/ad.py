@@ -16,6 +16,6 @@ from src.utils.lexicon import ENTER_AD_TEXT_MESSAGE
 async def process_ad_command(
         message: Message,
         state: FSMContext
-):
+) -> None:
     await message.answer(text=ENTER_AD_TEXT_MESSAGE)
     await state.set_state(FSMAdFillForm.fill_ad_text)

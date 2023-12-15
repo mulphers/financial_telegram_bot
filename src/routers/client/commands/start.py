@@ -18,7 +18,7 @@ from src.utils.lexicon import START_COMMAND_MESSAGE
 async def process_start_command(
         message: Message,
         uow: AbstractUnitOfWork
-):
+) -> None:
     await uow.user.create_user(
         data=UserCreate(
             user_id=message.from_user.id,

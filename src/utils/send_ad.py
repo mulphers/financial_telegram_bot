@@ -10,14 +10,14 @@ async def send_ad_all_active_users(
         bot: Bot,
         data: dict[str, str],
         uow: AbstractUnitOfWork
-):
+) -> None:
     for user in await uow.user.get_list_active_user():
         await bot.send_photo(
             chat_id=user.user_id,
-            photo=data.get('photo'),
-            caption=data.get('ad_text'),
+            photo=data['photo'],
+            caption=data['ad_text'],
             reply_markup=generate_ad_keyboard(
-                text=data.get('button_text'),
-                url=data.get('url')
+                text=data['button_text'],
+                url=data['url']
             )
         )

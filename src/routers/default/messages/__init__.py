@@ -1,1 +1,1 @@
-from src.routers.default.messages.other import *
+from src.routers.default.messages.other import *  # noqa

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from types import TracebackType
+from typing import Optional, Type
 
 from src.database.core.connection import async_session_maker
 from src.database.repositories.expense_repository import ExpenseRepository
@@ -25,7 +27,12 @@ class AbstractUnitOfWork(ABC):
 
         return self
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
+    async def __aexit__(
+            self,
+            exc_type: Optional[Type[BaseException]],
+            exc_val: Optional[BaseException],
+            exc_tb: Optional[TracebackType]
+    ) -> None:
         if exc_type:
             await self.rollback()
         else:

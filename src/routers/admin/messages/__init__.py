@@ -1,1 +1,1 @@
-from src.routers.admin.messages.ad_filling import *
+from src.routers.admin.messages.ad_filling import *  # noqa

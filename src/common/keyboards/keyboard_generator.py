@@ -9,7 +9,7 @@ from src.database.models.expense import Expense
 
 def generate_inline_keyboard(
         width: int,
-        **kwargs
+        **kwargs: str
 ) -> InlineKeyboardMarkup:
     inline_kb_builder = InlineKeyboardBuilder()
     buttons = []

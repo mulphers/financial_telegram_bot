@@ -7,8 +7,8 @@ from sqlalchemy.orm import DeclarativeBase
 class Base(DeclarativeBase):
     __abstract__: bool = True
 
-    @classmethod
-    @declared_attr
+    @classmethod  # type: ignore
+    @declared_attr  # type: ignore
     def __tablename__(cls) -> str:
         return re.sub(
             pattern=r'[A-Z]',

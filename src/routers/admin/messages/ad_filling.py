@@ -18,7 +18,7 @@ from src.utils.send_ad import send_ad_all_active_users
 async def process_ad_text_send(
         message: Message,
         state: FSMContext
-):
+) -> None:
     await state.update_data(ad_text=message.text)
     await message.answer(text=ENTER_PHOTO_MESSAGE)
     await state.set_state(FSMAdFillForm.upload_photo)
@@ -32,7 +32,7 @@ async def process_upload_photo(
         message: Message,
         photo: PhotoSize,
         state: FSMContext
-):
+) -> None:
     await state.update_data(photo=photo.file_id)
     await message.answer(text=ENTER_BUTTON_TEXT_MESSAGE)
     await state.set_state(FSMAdFillForm.fill_button_text)
@@ -45,7 +45,7 @@ async def process_upload_photo(
 async def process_button_text_send(
         message: Message,
         state: FSMContext
-):
+) -> None:
     await state.update_data(button_text=message.text)
     await message.answer(text=ENTER_URL_MESSAGE)
     await state.set_state(FSMAdFillForm.fill_url)
@@ -59,7 +59,7 @@ async def process_url_send(
         message: Message,
         bot: Bot,
         state: FSMContext
-):
+) -> None:
     await state.update_data(url=message.text)
     data = await state.get_data()
     await state.clear()
@@ -73,5 +73,5 @@ async def process_url_send(
 
 
 @admin_router.message(StateFilter(FSMAdFillForm))
-async def warning_data_send(message: Message):
+async def warning_data_send(message: Message) -> None:
     await message.answer(text=WARNING_DATA_SEND_MESSAGE)

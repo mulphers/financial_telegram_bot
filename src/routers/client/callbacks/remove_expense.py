@@ -22,7 +22,7 @@ from src.utils.lexicon import (EXPENSE_DELETE_MESSAGE,
 async def process_remove_expense_press(
         callback: CallbackQuery,
         uow: AbstractUnitOfWork
-):
+) -> None:
     result = await uow.expense.get_expense_for_day(user_id=callback.from_user.id)
 
     await callback.message.answer(
@@ -42,7 +42,7 @@ async def process_remove_expense(
         callback_data: ExpenseCallbackFactory,
         uow: AbstractUnitOfWork
 
-):
+) -> None:
     result = await uow.expense.delete_expense(expense_id=callback_data.expense_id)
 
     if result:

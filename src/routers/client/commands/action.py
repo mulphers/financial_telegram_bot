@@ -14,7 +14,7 @@ from src.utils.lexicon import (ACTION_COMMAND_MESSAGE,
     StateFilter(default_state),
     Command(commands='action')
 )
-async def process_action_command(message: Message):
+async def process_action_command(message: Message) -> None:
     await message.answer(
         text=ACTION_COMMAND_MESSAGE,
         reply_markup=generate_inline_keyboard(

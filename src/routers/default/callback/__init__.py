@@ -1,1 +1,1 @@
-from src.routers.default.callback.other import *
+from src.routers.default.callback.other import *  # noqa

@@ -16,7 +16,7 @@ from src.utils.lexicon import (DAY_PERIOD_MESSAGE, EXPENSE_PERIOD_MESSAGE,
     StateFilter(default_state),
     F.data == 'view_expenses'
 )
-async def process_view_expenses_press(callback: CallbackQuery):
+async def process_view_expenses_press(callback: CallbackQuery) -> None:
     await callback.message.edit_text(
         text=SELECT_PERIOD_MESSAGE,
         reply_markup=generate_inline_keyboard(
@@ -37,7 +37,7 @@ async def process_view_expenses_press(callback: CallbackQuery):
 async def process_day_period_press(
         callback: CallbackQuery,
         uow: AbstractUnitOfWork
-):
+) -> None:
     result = await uow.expense.get_expense_for_day(user_id=callback.from_user.id)
 
     await callback.message.answer(text=EXPENSE_PERIOD_MESSAGE.format(
@@ -55,7 +55,7 @@ async def process_day_period_press(
 async def process_month_period_press(
         callback: CallbackQuery,
         uow: AbstractUnitOfWork
-):
+) -> None:
     result = await uow.expense.get_expense_for_month(user_id=callback.from_user.id)
 
     await callback.message.answer(text=EXPENSE_PERIOD_MESSAGE.format(
@@ -73,7 +73,7 @@ async def process_month_period_press(
 async def process_year_period_press(
         callback: CallbackQuery,
         uow: AbstractUnitOfWork
-):
+) -> None:
     result = await uow.expense.get_expense_for_year(user_id=callback.from_user.id)
 
     await callback.message.answer(text=EXPENSE_PERIOD_MESSAGE.format(

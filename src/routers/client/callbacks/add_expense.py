@@ -16,7 +16,7 @@ from src.utils.lexicon import WRITE_AMOUNT_EXPENSE_MESSAGE
 async def process_add_expense_press(
         callback: CallbackQuery,
         state: FSMContext
-):
+) -> None:
     await callback.message.answer(text=WRITE_AMOUNT_EXPENSE_MESSAGE)
     await state.set_state(FSMExpenseFillForm.fill_amount_expense)
     await callback.answer()

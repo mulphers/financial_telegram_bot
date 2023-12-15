@@ -16,7 +16,7 @@ config = context.config
 section = config.config_ini_section
 config.set_section_option(section, 'DATABASE_URL', load_settings().db.url)
 
-fileConfig(config.config_file_name)
+fileConfig(config.config_file_name)  # type: ignore
 
 
 def run_migrations_offline() -> None:

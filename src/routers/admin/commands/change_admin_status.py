@@ -17,7 +17,7 @@ async def process_set_admin_status(
         message: Message,
         user_id: int,
         uow: AbstractUnitOfWork
-):
+) -> None:
     result = await uow.user.update_user(
         user_id=user_id,
         data=UserUpdate(
@@ -37,7 +37,7 @@ async def process_cancel_admin_status(
         message: Message,
         user_id: int,
         uow: AbstractUnitOfWork
-):
+) -> None:
     result = await uow.user.update_user(
         user_id=user_id,
         data=UserUpdate(
@@ -54,5 +54,5 @@ async def process_cancel_admin_status(
 @admin_router.message(F.text.regexp(r'(\/set_admin_status|\/cancel_admin_status)( .*)?'))
 async def information_for_change_admin_status_command(
         message: Message,
-):
+) -> None:
     await message.answer(text=INFORMATION_FOR_CHANGE_ADMIN_STATUS_COMMAND)

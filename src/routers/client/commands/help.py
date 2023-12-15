@@ -11,5 +11,5 @@ from src.utils.lexicon import HELP_COMMAND_MESSAGE
     StateFilter(default_state),
     Command(commands='help')
 )
-async def process_help_command(message: Message):
+async def process_help_command(message: Message) -> None:
     await message.answer(text=HELP_COMMAND_MESSAGE)

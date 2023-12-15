@@ -13,7 +13,7 @@ from src.utils.lexicon import (ADD_EXPENSE_MESSAGE, FINANCIAL_ACTIONS_MESSAGE,
     StateFilter(default_state),
     F.data == 'actions_on_finances'
 )
-async def process_actions_on_finances_press(callback: CallbackQuery):
+async def process_actions_on_finances_press(callback: CallbackQuery) -> None:
     await callback.message.edit_text(
         text=FINANCIAL_ACTIONS_MESSAGE,
         reply_markup=generate_inline_keyboard(

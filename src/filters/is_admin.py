@@ -1,3 +1,5 @@
+from typing import Any
+
 from aiogram.filters import BaseFilter
 from aiogram.types import Message
 
@@ -11,9 +13,9 @@ class IsAdminFilter(BaseFilter):
             self,
             message: Message,
             uow: AbstractUnitOfWork,
-            *args,
-            **kwargs
-    ):
+            *args: Any,
+            **kwargs: Any
+    ) -> bool:
         return message.from_user.id in map(lambda obj: obj.user_id,
                                            await uow.user.get_list_admin_user()
                                            )

@@ -12,7 +12,7 @@ from src.utils.decorators import with_database
 async def process_blocked_bot(
         message: Message,
         uow: AbstractUnitOfWork
-):
+) -> None:
     await uow.user.update_user(
         user_id=message.from_user.id,
         data=UserUpdate(
@@ -26,7 +26,7 @@ async def process_blocked_bot(
 async def process_unblocked_bot(
         message: Message,
         uow: AbstractUnitOfWork
-):
+) -> None:
     await uow.user.update_user(
         user_id=message.from_user.id,
         data=UserUpdate(
