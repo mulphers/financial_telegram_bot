@@ -1,6 +1,8 @@
 from datetime import date
 from typing import Optional, Sequence, Type
 
+from sqlalchemy import extract
+
 from src.common.dto.expense import ExpanseCreate
 from src.database.models.expense import Expense
 from src.database.repositories.sqlalchemy_repository import \
@@ -18,7 +20,9 @@ class ExpenseRepository(SQLAlchemyRepository[Expense]):
 
         return await self.get_many(
             self.model.user_id.__eq__(user_id),
-            self.model.created_at.like(f'{today.year}-{today.month}-{today.day}%')
+            extract('year', self.model.created_at) == today.year,
+            extract('month', self.model.created_at) == today.month,
+            extract('day', self.model.created_at) == today.day
         )
 
     async def get_expense_for_month(self, user_id: int) -> Sequence[Expense]:
@@ -26,13 +30,14 @@ class ExpenseRepository(SQLAlchemyRepository[Expense]):
 
         return await self.get_many(
             self.model.user_id.__eq__(user_id),
-            self.model.created_at.like(f'{today.year}-{today.month}-%')
+            extract('year', self.model.created_at) == today.year,
+            extract('month', self.model.created_at) == today.month
         )
 
     async def get_expense_for_year(self, user_id: int) -> Sequence[Expense]:
         return await self.get_many(
             self.model.user_id.__eq__(user_id),
-            self.model.created_at.like(f'{date.today().year}-%-%')
+            extract('year', self.model.created_at) == date.today().year
         )
 
     async def delete_expense(self, expense_id: int) -> Optional[Expense]:
