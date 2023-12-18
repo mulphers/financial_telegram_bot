@@ -44,6 +44,10 @@ def load_settings() -> Settings:
         ),
         db=DatabaseSettings(
             _url=env('DATABASE_URL'),
-            name=env('DATABASE_NAME')
+            name=env('DATABASE_NAME'),
+            host=env('DATABASE_HOST'),
+            port=env('DATABASE_PORT'),
+            user=env('DATABASE_USER'),
+            password=env('DATABASE_PASSWORD')
         )
     )
