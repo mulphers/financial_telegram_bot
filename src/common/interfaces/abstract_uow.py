@@ -14,10 +14,6 @@ class AbstractUnitOfWork(ABC):
         self.session_factory = async_session_maker
 
     async def __aenter__(self) -> AbstractUnitOfWork:
-        print('-' * 30)
-        print('__aenter__')
-        print('-' * 30)
-
         self.session = self.session_factory()
 
         # Register your repositories here
@@ -39,10 +35,6 @@ class AbstractUnitOfWork(ABC):
             await self.commit()
 
         await self.session.close()
-
-        print('-' * 30)
-        print('__aexit__')
-        print('-' * 30)
 
     @abstractmethod
     async def commit(self) -> None:
