@@ -27,6 +27,9 @@ financial_telegram_bot/
 │   │   │   ├── __init__.py
 │   │   │   ├── command_menu.py
 │   │   │   └── keyboard_generator.py
+│   │   ├── markers/
+│   │   │   ├── __init__.py
+│       │   └── gateway.py
 │   │   ├── __init__.py
 │   │   └── types.py
 │   ├── core/   
@@ -36,6 +39,7 @@ financial_telegram_bot/
 │   │   ├── core/
 │   │   │   ├── __init__.py
 │   │   │   ├── connection.py
+│   │   │   ├── gateway.py
 │   │   │   └── sqlalchemy_uow.py
 │   │   ├── models/
 │   │   │   ├── base/
@@ -105,7 +109,6 @@ financial_telegram_bot/
 │   │   │   ├── client.py
 │   │   │   └── command.py
 │   │   ├── __init__.py
-│   │   ├── decorators.py
 │   │   └── send_ad.py
 │   ├── __init__.py
 │   └── __main__.py
@@ -130,14 +133,14 @@ git clone https://github.com/mulphers/financial_telegram_bot.git
 Rename .env_example to .env and fill in
 
 ````
-BOT_TOKEN=yourtoken
+BOT_TOKEN=your_token
 
-DATABASE_URL=sqlite+aiosqlite:///{} || postgresql+asyncpg://{}
-DATABASE_NAME=yourdbname
-DATABASE_HOST=yourdbhost || None
-DATABASE_PORT=yourdbport || None
-DATABASE_USER=yourdbuser || None
-DATABASE_PASSWORD=yourdbpassword || None
+DATABASE_URI=sqlite+aiosqlite:///{} || postgresql+asyncpg://{}
+DATABASE_NAME=your_db_name
+DATABASE_HOST=your_db_host || None
+DATABASE_PORT=your_db_port || None
+DATABASE_USER=your_db_user || None
+DATABASE_PASSWORD=your_db_password || None
 ````
 
 ### 4. Run a project:
