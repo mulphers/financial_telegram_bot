@@ -65,7 +65,7 @@ async def process_url_send(
     await state.clear()
 
     await message.answer(text=START_AD_MESSAGE)
-    await send_ad_all_active_users(
+    await send_ad_all_active_users(  # type: ignore[call-arg]
         bot=bot,
         data=data
     )
