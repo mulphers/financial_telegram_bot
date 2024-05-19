@@ -1,17 +1,22 @@
+from typing import Annotated
+
 from aiogram import Bot
+from fast_depends import Depends, inject
 
-from src.common.interfaces.abstract_uow import AbstractUnitOfWork
 from src.common.keyboards.keyboard_generator import generate_ad_keyboard
-from src.utils.decorators import with_database
+from src.common.markers.gateway import TransactionGatewayMarker
+from src.database.core.gateway import DatabaseGateway
 
 
-@with_database
+@inject
 async def send_ad_all_active_users(
         bot: Bot,
         data: dict[str, str],
-        uow: AbstractUnitOfWork
+        gateway: Annotated[DatabaseGateway, Depends(TransactionGatewayMarker)]
 ) -> None:
-    for user in await uow.user.get_list_active_user():
+    user_repository = gateway.user_repository()
+
+    for user in await user_repository.get_list_active_user():
         await bot.send_photo(
             chat_id=user.user_id,
             photo=data['photo'],

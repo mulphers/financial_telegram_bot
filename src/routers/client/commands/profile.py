@@ -1,11 +1,14 @@
+from typing import Annotated
+
 from aiogram.filters.command import Command
 from aiogram.filters.state import StateFilter
 from aiogram.fsm.state import default_state
 from aiogram.types import Message
+from fast_depends import Depends, inject
 
-from src.common.interfaces.abstract_uow import AbstractUnitOfWork
+from src.common.markers.gateway import TransactionGatewayMarker
+from src.database.core.gateway import DatabaseGateway
 from src.routers.client.router import client_router
-from src.utils.decorators import with_database
 from src.utils.lexicon import PROFILE_COMMAND_MESSAGE
 
 
@@ -13,12 +16,14 @@ from src.utils.lexicon import PROFILE_COMMAND_MESSAGE
     StateFilter(default_state),
     Command(commands='profile')
 )
-@with_database
+@inject
 async def process_profile_command(
         message: Message,
-        uow: AbstractUnitOfWork
+        gateway: Annotated[DatabaseGateway, Depends(TransactionGatewayMarker)]
 ) -> None:
-    user = await uow.user.get_user(
+    user_repository = gateway.user_repository()
+
+    user = await user_repository.get_user(
         user_id=message.from_user.id
     )
 

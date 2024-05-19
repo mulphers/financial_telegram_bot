@@ -1,13 +1,16 @@
+from typing import Annotated
+
 from aiogram import F
 from aiogram.filters.state import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
+from fast_depends import Depends, inject
 
 from src.common.dto.expense import ExpanseCreate
 from src.common.fsm.expense_filling_state import FSMExpenseFillForm
-from src.common.interfaces.abstract_uow import AbstractUnitOfWork
+from src.common.markers.gateway import TransactionGatewayMarker
+from src.database.core.gateway import DatabaseGateway
 from src.routers.client.router import client_router
-from src.utils.decorators import with_database
 from src.utils.lexicon import (EXPENSE_SAVED_MESSAGE,
                                WARNING_AMOUNT_EXPENSE_MESSAGE,
                                WARNING_SHORT_DESCRIPTION_MESSAGE,
@@ -36,17 +39,19 @@ async def warning_amount_expense_message(message: Message) -> None:
     StateFilter(FSMExpenseFillForm.fill_short_description),
     F.text
 )
-@with_database
+@inject
 async def process_short_description_expense_message(
         message: Message,
         state: FSMContext,
-        uow: AbstractUnitOfWork
+        gateway: Annotated[DatabaseGateway, Depends(TransactionGatewayMarker)]
 ) -> None:
+    expense_repository = gateway.expense_repository()
+
     await state.update_data(short_description=message.text)
 
     state_data = await state.get_data()
 
-    await uow.expense.create_expense(
+    await expense_repository.create_expense(
         data=ExpanseCreate(
             user_id=message.from_user.id,
             amount_expense=state_data.get('amount_expense'),

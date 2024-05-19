@@ -1,19 +1,24 @@
+from typing import Annotated
+
 from aiogram.filters import KICKED, MEMBER, ChatMemberUpdatedFilter
 from aiogram.types import Message
+from fast_depends import Depends, inject
 
 from src.common.dto.user import UserUpdate
-from src.common.interfaces.abstract_uow import AbstractUnitOfWork
+from src.common.markers.gateway import TransactionGatewayMarker
+from src.database.core.gateway import DatabaseGateway
 from src.routers.client import client_router
-from src.utils.decorators import with_database
 
 
 @client_router.my_chat_member(ChatMemberUpdatedFilter(member_status_changed=KICKED))
-@with_database
+@inject
 async def process_blocked_bot(
         message: Message,
-        uow: AbstractUnitOfWork
+        gateway: Annotated[DatabaseGateway, Depends(TransactionGatewayMarker)]
 ) -> None:
-    await uow.user.update_user(
+    user_repository = gateway.user_repository()
+
+    await user_repository.update_user(
         user_id=message.from_user.id,
         data=UserUpdate(
             is_active=False
@@ -22,12 +27,14 @@ async def process_blocked_bot(
 
 
 @client_router.my_chat_member(ChatMemberUpdatedFilter(member_status_changed=MEMBER))
-@with_database
+@inject
 async def process_unblocked_bot(
         message: Message,
-        uow: AbstractUnitOfWork
+        gateway: Annotated[DatabaseGateway, Depends(TransactionGatewayMarker)]
 ) -> None:
-    await uow.user.update_user(
+    user_repository = gateway.user_repository()
+
+    await user_repository.update_user(
         user_id=message.from_user.id,
         data=UserUpdate(
             is_active=True
