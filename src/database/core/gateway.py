@@ -3,9 +3,8 @@ from __future__ import annotations
 from types import TracebackType
 from typing import AsyncGenerator, Optional, Type
 
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from src.common.interfaces.abstract_uow import AbstractUnitOfWork
+from src.common.types import SessionFactoryType
 from src.database.core.sqlalchemy_uow import sqlalchemy_unit_of_work_factory
 from src.database.repositories.expense_repository import ExpenseRepository
 from src.database.repositories.user_repository import UserRepository
@@ -35,11 +34,13 @@ class DatabaseGateway:
 
 
 class TransactionGateway:
-    def __init__(self, session: AsyncSession) -> None:
-        self.session = session
+    def __init__(self, session_factory: SessionFactoryType) -> None:
+        self.session_factory = session_factory
 
     async def __call__(self) -> AsyncGenerator[DatabaseGateway, None]:
-        async with database_gateway_factory(uow=sqlalchemy_unit_of_work_factory(session=self.session)) as gateway:
+        async with database_gateway_factory(
+                uow=sqlalchemy_unit_of_work_factory(session=self.session_factory())
+        ) as gateway:
             yield gateway
 
 

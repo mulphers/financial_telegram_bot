@@ -18,7 +18,7 @@ async def main() -> None:
     async_engine = create_as_engine(url=settings.db.url)
     async_session_factory = create_as_session_factory(engine=async_engine)
 
-    dependency_provider.override(TransactionGatewayMarker, TransactionGateway(async_session_factory()))
+    dependency_provider.override(TransactionGatewayMarker, TransactionGateway(async_session_factory))
 
     bot = Bot(token=settings.bot.token)
     dp = Dispatcher()

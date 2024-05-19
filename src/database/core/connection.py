@@ -1,7 +1,7 @@
-from sqlalchemy.ext.asyncio import (AsyncEngine, AsyncSession,
-                                    async_sessionmaker, create_async_engine)
+from sqlalchemy.ext.asyncio import (AsyncEngine, async_sessionmaker,
+                                    create_async_engine)
 
-SessionFactoryType = async_sessionmaker[AsyncSession]
+from src.common.types import SessionFactoryType
 
 
 def create_as_engine(url: str) -> AsyncEngine:
