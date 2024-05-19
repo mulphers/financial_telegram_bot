@@ -1,53 +1,59 @@
-from dataclasses import dataclass
+from pathlib import Path
 from typing import Optional
 
-from environs import Env
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-@dataclass
-class BotSetting:
+class BotSettings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file='./.env',
+        env_file_encoding='utf-8',
+        case_sensitive=False,
+        extra='ignore',
+        env_prefix='bot_'
+    )
+
     token: str
 
 
-@dataclass
-class DatabaseSettings:
-    _url: str
+class DatabaseSettings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file='./.env',
+        env_file_encoding='utf-8',
+        case_sensitive=False,
+        extra='ignore',
+        env_prefix='database_'
+    )
+
+    uri: str
     name: str
     host: Optional[str] = None
-    port: Optional[str] = None
+    port: Optional[int] = None
     user: Optional[str] = None
     password: Optional[str] = None
 
     @property
     def url(self) -> str:
-        if 'sqlite' in self._url:
-            return self._url.format(self.name)
+        if 'sqlite' in self.uri:
+            return self.uri.format(self.name)
 
-        return self._url.format(
-            f'{self.user}:{self.password}@{self.host}:{self.port}/{self.name}'
-        )
+        return self.uri.format(f'{self.user}:{self.password}@{self.host}:{self.port}/{self.name}')
 
 
-@dataclass
-class Settings:
-    bot: BotSetting
+class Settings(BaseSettings):
+    bot: BotSettings
     db: DatabaseSettings
 
+    @staticmethod
+    def root_dir() -> Path:
+        return Path(__file__).resolve().parent.parent.parent
 
-def load_settings() -> Settings:
-    env = Env()
-    env.read_env(path='./.env')
 
+def load_settings(
+        bot_settings: Optional[BotSettings] = None,
+        database_settings: Optional[DatabaseSettings] = None
+) -> Settings:
     return Settings(
-        bot=BotSetting(
-            token=env('BOT_TOKEN')
-        ),
-        db=DatabaseSettings(
-            _url=env('DATABASE_URL'),
-            name=env('DATABASE_NAME'),
-            host=env('DATABASE_HOST'),
-            port=env('DATABASE_PORT'),
-            user=env('DATABASE_USER'),
-            password=env('DATABASE_PASSWORD')
-        )
+        bot=bot_settings or BotSettings(),  # type: ignore[call-arg]
+        db=database_settings or DatabaseSettings()  # type: ignore[call-arg]
     )
