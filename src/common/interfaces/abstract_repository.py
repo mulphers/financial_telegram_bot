@@ -1,35 +1,36 @@
 from abc import ABC, abstractmethod
-from typing import Any, Generic, Optional, Sequence
+from typing import Any, Generic, Optional, Sequence, Type
 
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from src.common.types import EntryType
+from src.common.types import ColumnType, EntryType, SessionType
 
 
-class AbstractRepository(ABC, Generic[EntryType]):
-    def __init__(self, session: AsyncSession) -> None:
+class AbstractRepository(ABC, Generic[EntryType, SessionType, ColumnType]):
+    model: Type[EntryType]
+
+    def __init__(self, session: SessionType) -> None:
         self.session = session
 
     @abstractmethod
-    async def create(self, data: dict[str, Any]) -> EntryType:
+    async def create(self, data: dict[str, Any]) -> Optional[EntryType]:
         raise NotImplementedError
 
     @abstractmethod
-    async def get(self, *clauses: Any) -> Optional[EntryType]:
+    async def get(self, *clauses: ColumnType) -> Optional[EntryType]:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_many(self, *clauses: Any, limit: Optional[int] = None) -> Sequence[EntryType]:
+    async def get_many(
+            self,
+            *clauses: ColumnType,
+            offset: Optional[int] = None,
+            limit: Optional[int] = None
+    ) -> Sequence[EntryType]:
         raise NotImplementedError
 
     @abstractmethod
-    async def update(self, *clauses: Any, data: dict[str, Any]) -> Sequence[EntryType]:
+    async def update(self, *clauses: ColumnType, data: dict[str, Any]) -> Sequence[EntryType]:
         raise NotImplementedError
 
     @abstractmethod
-    async def delete(self, *clauses: Any) -> Sequence[EntryType]:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def create_relationship(self, model: Any, data: dict[str, Any]) -> None:
+    async def delete(self, *clauses: ColumnType) -> Sequence[EntryType]:
         raise NotImplementedError

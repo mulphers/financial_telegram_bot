@@ -1,15 +1,16 @@
 from typing import Any, Optional, Sequence, Type
 
 from sqlalchemy import ColumnExpressionArgument, delete, insert, select, update
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.common.interfaces.abstract_repository import AbstractRepository
-from src.common.types import Model
+from src.common.types import ModelType
 
 
-class SQLAlchemyRepository(AbstractRepository[Model]):
-    model: Type[Model]
+class SQLAlchemyRepository(AbstractRepository[ModelType, AsyncSession, ColumnExpressionArgument[bool]]):
+    model: Type[ModelType]
 
-    async def create(self, data: dict[str, Any]) -> Model:
+    async def create(self, data: dict[str, Any]) -> Optional[ModelType]:
         stmt = (
             insert(self.model)
             .values(**data)
@@ -18,7 +19,7 @@ class SQLAlchemyRepository(AbstractRepository[Model]):
 
         return (await self.session.execute(stmt)).scalar_one()
 
-    async def get(self, *clauses: ColumnExpressionArgument[bool]) -> Optional[Model]:
+    async def get(self, *clauses: ColumnExpressionArgument[bool]) -> Optional[ModelType]:
         stmt = (
             select(self.model)
             .where(*clauses)
@@ -26,22 +27,22 @@ class SQLAlchemyRepository(AbstractRepository[Model]):
 
         return (await self.session.execute(stmt)).scalars().first()
 
-    async def get_many(self, *clauses: ColumnExpressionArgument[bool], limit: Optional[int] = None) -> Sequence[Model]:
-        if limit:
-            stmt = (
-                select(self.model)
-                .where(*clauses)
-                .limit(limit)
-            )
-        else:
-            stmt = (
-                select(self.model)
-                .where(*clauses)
-            )
+    async def get_many(
+            self,
+            *clauses: ColumnExpressionArgument[bool],
+            offset: Optional[int] = None,
+            limit: Optional[int] = None
+    ) -> Sequence[ModelType]:
+        stmt = (
+            select(self.model)
+            .where(*clauses)
+            .offset(offset)
+            .limit(limit)
+        )
 
         return (await self.session.execute(stmt)).scalars().all()
 
-    async def update(self, *clauses: ColumnExpressionArgument[bool], data: dict[str, Any]) -> Sequence[Model]:
+    async def update(self, *clauses: ColumnExpressionArgument[bool], data: dict[str, Any]) -> Sequence[ModelType]:
         stmt = (
             update(self.model)
             .where(*clauses)
@@ -51,7 +52,7 @@ class SQLAlchemyRepository(AbstractRepository[Model]):
 
         return (await self.session.execute(stmt)).scalars().all()
 
-    async def delete(self, *clauses: ColumnExpressionArgument[bool]) -> Sequence[Model]:
+    async def delete(self, *clauses: ColumnExpressionArgument[bool]) -> Sequence[ModelType]:
         stmt = (
             delete(self.model)
             .where(*clauses)
@@ -59,12 +60,3 @@ class SQLAlchemyRepository(AbstractRepository[Model]):
         )
 
         return (await self.session.execute(stmt)).scalars().all()
-
-    async def create_relationship(self, model: Any, data: dict[str, Any]) -> None:
-        stmt = (
-            insert(model)
-            .values(**data)
-            .returning(model)
-        )
-
-        await self.session.execute(stmt)
