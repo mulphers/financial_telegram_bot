@@ -29,7 +29,7 @@ financial_telegram_bot/
 │   │   │   └── keyboard_generator.py
 │   │   ├── markers/
 │   │   │   ├── __init__.py
-│       │   └── gateway.py
+│   │   │   └── gateway.py
 │   │   ├── __init__.py
 │   │   └── types.py
 │   ├── core/   
